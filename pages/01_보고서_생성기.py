@@ -9,7 +9,7 @@ st.set_page_config(
 import insert_logo 
 from with_report import condition_select, overview_writer, preprocessing_init_data, choose_trans_metric, export_info, bullet_output, ch_ranking_writer, detail_writer, keyword_writer, history_writer
 
-insert_logo.add_logo("withbrother_logo.png")
+insert_logo.add_logo("C:\\Users\\markd\\AI\WithBrother-AI\\withbrother_logo.png")
 
 #보고서 유형 저장
 if 'condition_set' not in st.session_state:
@@ -201,6 +201,8 @@ if st.session_state.trans_metric_set:
                 ch_overview_st_dic = {}
                 with st.spinner('데이터 분석 중...'):
                     for channel in channels:
+                        if str(channel) == '정보없음':
+                            pass
                         rounded_overview_ch_df = ch_ranking_writer.ch_df(
                             ch_ranking_df, '매체', channel, 
                             grouping_period,
@@ -250,165 +252,173 @@ if st.session_state.trans_metric_set:
 
         with brnch_ranking:
             st.spinner('데이터 분석 중...')
-            if st.session_state.brnch_ranking_result is None:
-                brnch_ranking_df = ch_ranking_writer.ch_ranking_df(
-                    st.session_state.df_set['used_media'],
-                    st.session_state.df_set['used_ga'],
-                    '소재구분',
-                    st.session_state.metric_set,
-                    st.session_state.trans_metric_set,
-                    grouping_period,
-                    st.session_state.condition_set,
-                )
-                
-                st.subheader('기간별 소재구분 변화')
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    now_period_result, sort_order = ch_ranking_writer.display_period_data(
-                        st.session_state.period_set["now"],
-                        brnch_ranking_df,
-                        st.session_state.overview_result['overview_df'],
-                        '소재구분',
-                        grouping_period,
-                        None
-                    )
-                    
-                    st.write(now_period_result)
-
-                    st.session_state.brnch_ranking_result = {"now_result_df":now_period_result}
-                
-                with col2:
-                    pre_period_result, _ = ch_ranking_writer.display_period_data(
-                        st.session_state.period_set["pre"],
-                        brnch_ranking_df,
-                        st.session_state.overview_result['overview_df'],
-                        '소재구분',
-                        grouping_period,
-                        sort_order
-                    )
-                    
-                    st.write(pre_period_result)
-                    st.session_state.brnch_ranking_result["pre_result_df"] = pre_period_result
-
-                st.session_state.brnch_ranking_result["sort_order"] = sort_order
-                brnchs = [x for x in now_period_result['소재구분'].unique() if x != '합계']
-
-                brnch_overview_df_dic = {}
-                brnch_overview_st_dic = {}
-                with st.spinner('데이터 분석 중...'):
-                    for brnch in brnchs:
-                        rounded_overview_brnch_df = ch_ranking_writer.ch_df(
-                            brnch_ranking_df, '소재구분', brnch, 
-                            grouping_period,
-                            st.session_state.period_set,
-                            st.session_state.condition_set,
-                        )
-                        overview_brnch_statement = overview_writer.writer(rounded_overview_brnch_df)
-                        
-                        brnch_overview_df_dic[brnch] = rounded_overview_brnch_df
-                        brnch_overview_st_dic[brnch] = overview_brnch_statement
-
-                st.session_state.brnch_ranking_result["brnch_overview_df_dic"] = brnch_overview_df_dic
-                st.session_state.brnch_ranking_result["brnch_overview_st_dic"] = brnch_overview_st_dic
-
-                brnch_summary_statement = ch_ranking_writer.ch_writer(brnch_overview_st_dic)
-
-                st.session_state.brnch_ranking_result["brnch_summary_statement"] = brnch_summary_statement
-                
-                bullet_output.print_bullet(brnch_summary_statement)
-
-                st.subheader('소재구분별 변화량 비교')
-
-                for brnch in sort_order:
-                    st.subheader(brnch)
-                    st.write(brnch_overview_df_dic[brnch])
-                    bullet_output.print_bullet(brnch_overview_st_dic[brnch])
-
-
+            if st.session_state.df_set['used_media']['소재구분'].isnull().all():
+                st.write('매체 데이터에서 소재구분 데이터가 없는 기간입니다.')
             else:
-                st.subheader('기간별 소재구분 변화')
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.subheader(st.session_state.period_set["now"])
-                    st.write(st.session_state.brnch_ranking_result["now_result_df"])
-                with col2:
-                    st.subheader(st.session_state.period_set["pre"])
-                    st.write(st.session_state.brnch_ranking_result["pre_result_df"])
-                
-                bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_summary_statement"])
+                if st.session_state.brnch_ranking_result is None:
+                    brnch_ranking_df = ch_ranking_writer.ch_ranking_df(
+                        st.session_state.df_set['used_media'],
+                        st.session_state.df_set['used_ga'],
+                        '소재구분',
+                        st.session_state.metric_set,
+                        st.session_state.trans_metric_set,
+                        grouping_period,
+                        st.session_state.condition_set,
+                    )
+                    
+                    st.subheader('기간별 소재구분 변화')
+                    col1, col2 = st.columns(2)
 
-                st.subheader('소재구분별 변화량 비교')
+                    with col1:
+                        now_period_result, sort_order = ch_ranking_writer.display_period_data(
+                            st.session_state.period_set["now"],
+                            brnch_ranking_df,
+                            st.session_state.overview_result['overview_df'],
+                            '소재구분',
+                            grouping_period,
+                            None
+                        )
+                        
+                        st.write(now_period_result)
 
-                for brnch in st.session_state.brnch_ranking_result["sort_order"]:
-                    st.subheader(brnch)
-                    st.write(st.session_state.brnch_ranking_result["brnch_overview_df_dic"][brnch])
-                    bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_overview_st_dic"][brnch])
+                        st.session_state.brnch_ranking_result = {"now_result_df":now_period_result}
+                    
+                    with col2:
+                        pre_period_result, _ = ch_ranking_writer.display_period_data(
+                            st.session_state.period_set["pre"],
+                            brnch_ranking_df,
+                            st.session_state.overview_result['overview_df'],
+                            '소재구분',
+                            grouping_period,
+                            sort_order
+                        )
+                        
+                        st.write(pre_period_result)
+                        st.session_state.brnch_ranking_result["pre_result_df"] = pre_period_result
+
+                    st.session_state.brnch_ranking_result["sort_order"] = sort_order
+                    brnchs = [x for x in now_period_result['소재구분'].unique() if x != '합계']
+
+                    brnch_overview_df_dic = {}
+                    brnch_overview_st_dic = {}
+                    with st.spinner('데이터 분석 중...'):
+                        for brnch in brnchs:
+                            if str(brnch) == '정보없음':
+                                pass
+                            rounded_overview_brnch_df = ch_ranking_writer.ch_df(
+                                brnch_ranking_df, '소재구분', brnch, 
+                                grouping_period,
+                                st.session_state.period_set,
+                                st.session_state.condition_set,
+                            )
+                            overview_brnch_statement = overview_writer.writer(rounded_overview_brnch_df)
+                            
+                            brnch_overview_df_dic[brnch] = rounded_overview_brnch_df
+                            brnch_overview_st_dic[brnch] = overview_brnch_statement
+
+                    st.session_state.brnch_ranking_result["brnch_overview_df_dic"] = brnch_overview_df_dic
+                    st.session_state.brnch_ranking_result["brnch_overview_st_dic"] = brnch_overview_st_dic
+
+                    brnch_summary_statement = ch_ranking_writer.ch_writer(brnch_overview_st_dic)
+
+                    st.session_state.brnch_ranking_result["brnch_summary_statement"] = brnch_summary_statement
+                    
+                    bullet_output.print_bullet(brnch_summary_statement)
+
+                    st.subheader('소재구분별 변화량 비교')
+
+                    for brnch in sort_order:
+                        st.subheader(brnch)
+                        st.write(brnch_overview_df_dic[brnch])
+                        bullet_output.print_bullet(brnch_overview_st_dic[brnch])
+
+
+                else:
+                    st.subheader('기간별 소재구분 변화')
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.subheader(st.session_state.period_set["now"])
+                        st.write(st.session_state.brnch_ranking_result["now_result_df"])
+                    with col2:
+                        st.subheader(st.session_state.period_set["pre"])
+                        st.write(st.session_state.brnch_ranking_result["pre_result_df"])
+                    
+                    bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_summary_statement"])
+
+                    st.subheader('소재구분별 변화량 비교')
+
+                    for brnch in st.session_state.brnch_ranking_result["sort_order"]:
+                        st.subheader(brnch)
+                        st.write(st.session_state.brnch_ranking_result["brnch_overview_df_dic"][brnch])
+                        bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_overview_st_dic"][brnch])
 
         with brnch_detail_ranking:
-            st.header("소재 구분 분석")
-            st.write("분석하고자 하는 소재 구분을 선택해주세요.")
-            selected_br = st.radio(
-                "소재구분 선택",
-                st.session_state.df_set['used_media']["소재구분"].dropna().unique()
-            )
-           
-            sort_orders_br = org_sort_orders
-            metrics = st.session_state.overview_result['overview_df'].columns.tolist()
-
-            for metric in metrics:
-                if metric not in org_sort_orders.keys():
-                    sort_orders_br[metric] = False
-                else:
-                    pass
-            
-            submit_button_br, sort_columns_br = detail_writer.choose_metric(metrics,1)
-
-            if submit_button_br:
-                filtered_br_df = st.session_state.df_set['used_media'][st.session_state.df_set['used_media']["소재구분"] == selected_br]
-                filtered_ga_br_df = st.session_state.df_set['used_ga'][st.session_state.df_set['used_ga']["소재구분"] == selected_br]
-
-                detail_df = ch_ranking_writer.ch_ranking_df(
-                    filtered_br_df,
-                    filtered_ga_br_df,
-                    '소재종류',
-                    st.session_state.metric_set,
-                    st.session_state.trans_metric_set,
-                    grouping_period,
-                    st.session_state.condition_set,
-                )
-                
-                filtered_detail_df = detail_df[detail_df[grouping_period] == st.session_state.period_set["now"]]
-
-                sorted_df, top_num, br_statements = detail_writer.display_top(
-                    sort_columns_br,
-                    sort_orders_br,
-                    filtered_detail_df, 
-                    st.session_state.overview_result['overview_df'],
-                )
-
-                st.session_state.brnch_detail_result = {'top_brnch_detail_df':sorted_df,'top_num_brnch_detail': top_num, 'brnch_detail_statment':br_statements}
-
-                st.write('정렬된 상위 ' + str(top_num) + '개 소재종류')
-                st.write(sorted_df)
-
-                for statement in br_statements:
-                    st.write(statement)
-
-                description_brnch_detail = detail_writer.writer(top_num, sorted_df, sort_columns_br)
-
-                st.session_state.brnch_detail_result['description_brnch_detail'] = description_brnch_detail
-
-                st.write(description_brnch_detail)
+            if st.session_state.df_set['used_media']['소재구분'].isnull().all():
+                st.write('매체 데이터에서 소재구분 데이터가 없는 기간입니다.')
             else:
-                st.write('정렬 기준 지표를 선택한 후, 정렬 적용 버튼을 눌러주세요.')
-                if st.session_state.brnch_detail_result is not None:
-                    st.write('정렬된 상위 ' + str(st.session_state.brnch_detail_result['top_num_brnch_detail']) + '개 소재종류')
-                    st.write(st.session_state.brnch_detail_result['top_brnch_detail_df'])
+                st.header("소재 구분 분석")
+                st.write("분석하고자 하는 소재 구분을 선택해주세요.")
+                selected_br = st.radio(
+                    "소재구분 선택",
+                    st.session_state.df_set['used_media']["소재구분"].dropna().unique()
+                )
+            
+                sort_orders_br = org_sort_orders
+                metrics = st.session_state.overview_result['overview_df'].columns.tolist()
 
-                    for statement in st.session_state.brnch_detail_result['brnch_detail_statment']:
+                for metric in metrics:
+                    if metric not in org_sort_orders.keys():
+                        sort_orders_br[metric] = False
+                    else:
+                        pass
+                
+                submit_button_br, sort_columns_br = detail_writer.choose_metric(metrics,1)
+
+                if submit_button_br:
+                    filtered_br_df = st.session_state.df_set['used_media'][st.session_state.df_set['used_media']["소재구분"] == selected_br]
+                    filtered_ga_br_df = st.session_state.df_set['used_ga'][st.session_state.df_set['used_ga']["소재구분"] == selected_br]
+
+                    detail_df = ch_ranking_writer.ch_ranking_df(
+                        filtered_br_df,
+                        filtered_ga_br_df,
+                        '소재종류',
+                        st.session_state.metric_set,
+                        st.session_state.trans_metric_set,
+                        grouping_period,
+                        st.session_state.condition_set,
+                    )
+                    
+                    filtered_detail_df = detail_df[detail_df[grouping_period] == st.session_state.period_set["now"]]
+
+                    sorted_df, top_num, br_statements = detail_writer.display_top(
+                        sort_columns_br,
+                        sort_orders_br,
+                        filtered_detail_df, 
+                        st.session_state.overview_result['overview_df'],
+                    )
+
+                    st.session_state.brnch_detail_result = {'top_brnch_detail_df':sorted_df,'top_num_brnch_detail': top_num, 'brnch_detail_statment':br_statements}
+
+                    st.write('정렬된 상위 ' + str(top_num) + '개 소재종류')
+                    st.write(sorted_df)
+
+                    for statement in br_statements:
                         st.write(statement)
-                    st.write(st.session_state.brnch_detail_result['description_brnch_detail'])
+
+                    description_brnch_detail = detail_writer.writer(top_num, sorted_df, sort_columns_br)
+
+                    st.session_state.brnch_detail_result['description_brnch_detail'] = description_brnch_detail
+
+                    st.write(description_brnch_detail)
+                else:
+                    st.write('정렬 기준 지표를 선택한 후, 정렬 적용 버튼을 눌러주세요.')
+                    if st.session_state.brnch_detail_result is not None:
+                        st.write('정렬된 상위 ' + str(st.session_state.brnch_detail_result['top_num_brnch_detail']) + '개 소재종류')
+                        st.write(st.session_state.brnch_detail_result['top_brnch_detail_df'])
+
+                        for statement in st.session_state.brnch_detail_result['brnch_detail_statment']:
+                            st.write(statement)
+                        st.write(st.session_state.brnch_detail_result['description_brnch_detail'])
 
         with cmp_ranking:
             st.header("캠페인 분석")
@@ -690,6 +700,8 @@ if st.session_state.trans_metric_set:
                 ch_overview_st_dic = {}
                 with st.spinner('데이터 분석 중...'):
                     for channel in channels:
+                        if str(channel) == '정보없음':
+                            pass
                         rounded_overview_ch_df = ch_ranking_writer.ch_df(
                             ch_ranking_df, '매체', channel, 
                             grouping_period,
@@ -736,6 +748,175 @@ if st.session_state.trans_metric_set:
                     st.subheader(channel)
                     st.write(st.session_state.ch_ranking_result["ch_overview_df_dic"][channel])
                     bullet_output.print_bullet(st.session_state.ch_ranking_result["ch_overview_st_dic"][channel])
+
+        with brnch_ranking:
+            st.spinner('데이터 분석 중...')
+            if st.session_state.df_set['used_media']['소재구분'].isnull().all():
+                st.write('매체 데이터에서 소재구분 데이터가 없는 기간입니다.')
+            else:
+                if st.session_state.brnch_ranking_result is None:
+                    brnch_ranking_df = ch_ranking_writer.ch_ranking_df(
+                        st.session_state.df_set['used_media'],
+                        st.session_state.df_set['used_ga'],
+                        '소재구분',
+                        st.session_state.metric_set,
+                        st.session_state.trans_metric_set,
+                        grouping_period,
+                        st.session_state.condition_set,
+                    )
+                    
+                    st.subheader('기간별 소재구분 변화')
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        now_period_result, sort_order = ch_ranking_writer.display_period_data(
+                            st.session_state.period_set["now"],
+                            brnch_ranking_df,
+                            st.session_state.overview_result['overview_df'],
+                            '소재구분',
+                            grouping_period,
+                            None
+                        )
+                        
+                        st.write(now_period_result)
+
+                        st.session_state.brnch_ranking_result = {"now_result_df":now_period_result}
+                    
+                    with col2:
+                        pre_period_result, _ = ch_ranking_writer.display_period_data(
+                            st.session_state.period_set["pre"],
+                            brnch_ranking_df,
+                            st.session_state.overview_result['overview_df'],
+                            '소재구분',
+                            grouping_period,
+                            sort_order
+                        )
+                        
+                        st.write(pre_period_result)
+                        st.session_state.brnch_ranking_result["pre_result_df"] = pre_period_result
+
+                    st.session_state.brnch_ranking_result["sort_order"] = sort_order
+                    brnchs = [x for x in now_period_result['소재구분'].unique() if x != '합계']
+
+                    brnch_overview_df_dic = {}
+                    brnch_overview_st_dic = {}
+                    with st.spinner('데이터 분석 중...'):
+                        for brnch in brnchs:
+                            if str(brnch) == '정보없음':
+                                pass
+                            rounded_overview_brnch_df = ch_ranking_writer.ch_df(
+                                brnch_ranking_df, '소재구분', brnch, 
+                                grouping_period,
+                                st.session_state.period_set,
+                                st.session_state.condition_set,
+                            )
+                            overview_brnch_statement = overview_writer.writer(rounded_overview_brnch_df)
+                            
+                            brnch_overview_df_dic[brnch] = rounded_overview_brnch_df
+                            brnch_overview_st_dic[brnch] = overview_brnch_statement
+
+                    st.session_state.brnch_ranking_result["brnch_overview_df_dic"] = brnch_overview_df_dic
+                    st.session_state.brnch_ranking_result["brnch_overview_st_dic"] = brnch_overview_st_dic
+
+                    brnch_summary_statement = ch_ranking_writer.ch_writer(brnch_overview_st_dic)
+
+                    st.session_state.brnch_ranking_result["brnch_summary_statement"] = brnch_summary_statement
+                    
+                    bullet_output.print_bullet(brnch_summary_statement)
+
+                    st.subheader('소재구분별 변화량 비교')
+
+                    for brnch in sort_order:
+                        st.subheader(brnch)
+                        st.write(brnch_overview_df_dic[brnch])
+                        bullet_output.print_bullet(brnch_overview_st_dic[brnch])
+
+                else:
+                    st.subheader('기간별 소재구분 변화')
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.subheader(st.session_state.period_set["now"])
+                        st.write(st.session_state.brnch_ranking_result["now_result_df"])
+                    with col2:
+                        st.subheader(st.session_state.period_set["pre"])
+                        st.write(st.session_state.brnch_ranking_result["pre_result_df"])
+                    
+                    bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_summary_statement"])
+
+                    st.subheader('소재구분별 변화량 비교')
+
+                    for brnch in st.session_state.brnch_ranking_result["sort_order"]:
+                        st.subheader(brnch)
+                        st.write(st.session_state.brnch_ranking_result["brnch_overview_df_dic"][brnch])
+                        bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_overview_st_dic"][brnch])
+
+        with brnch_detail_ranking:
+            if st.session_state.df_set['used_media']['소재구분'].isnull().all():
+                st.write('매체 데이터에서 소재구분 데이터가 없는 기간입니다.')
+            else:
+                st.header("소재 구분 분석")
+                st.write("분석하고자 하는 소재 구분을 선택해주세요.")
+                selected_br = st.radio(
+                    "소재구분 선택",
+                    st.session_state.df_set['used_media']["소재구분"].dropna().unique()
+                )
+            
+                sort_orders_br = org_sort_orders
+                metrics = st.session_state.overview_result['overview_df'].columns.tolist()
+
+                for metric in metrics:
+                    if metric not in org_sort_orders.keys():
+                        sort_orders_br[metric] = False
+                    else:
+                        pass
+                
+                submit_button_br, sort_columns_br = detail_writer.choose_metric(metrics,1)
+
+                if submit_button_br:
+                    filtered_br_df = st.session_state.df_set['used_media'][st.session_state.df_set['used_media']["소재구분"] == selected_br]
+                    filtered_ga_br_df = st.session_state.df_set['used_ga'][st.session_state.df_set['used_ga']["소재구분"] == selected_br]
+
+                    detail_df = ch_ranking_writer.ch_ranking_df(
+                        filtered_br_df,
+                        filtered_ga_br_df,
+                        '소재종류',
+                        st.session_state.metric_set,
+                        st.session_state.trans_metric_set,
+                        grouping_period,
+                        st.session_state.condition_set,
+                    )
+                    
+                    filtered_detail_df = detail_df[detail_df[grouping_period] == st.session_state.period_set["now"]]
+
+                    sorted_df, top_num, br_statements = detail_writer.display_top(
+                        sort_columns_br,
+                        sort_orders_br,
+                        filtered_detail_df, 
+                        st.session_state.overview_result['overview_df'],
+                    )
+
+                    st.session_state.brnch_detail_result = {'top_brnch_detail_df':sorted_df,'top_num_brnch_detail': top_num, 'brnch_detail_statment':br_statements}
+
+                    st.write('정렬된 상위 ' + str(top_num) + '개 소재종류')
+                    st.write(sorted_df)
+
+                    for statement in br_statements:
+                        st.write(statement)
+
+                    description_brnch_detail = detail_writer.writer(top_num, sorted_df, sort_columns_br)
+
+                    st.session_state.brnch_detail_result['description_brnch_detail'] = description_brnch_detail
+
+                    st.write(description_brnch_detail)
+                else:
+                    st.write('정렬 기준 지표를 선택한 후, 정렬 적용 버튼을 눌러주세요.')
+                    if st.session_state.brnch_detail_result is not None:
+                        st.write('정렬된 상위 ' + str(st.session_state.brnch_detail_result['top_num_brnch_detail']) + '개 소재종류')
+                        st.write(st.session_state.brnch_detail_result['top_brnch_detail_df'])
+
+                        for statement in st.session_state.brnch_detail_result['brnch_detail_statment']:
+                            st.write(statement)
+                        st.write(st.session_state.brnch_detail_result['description_brnch_detail'])
 
         with cmp_ranking:
             st.header("캠페인 분석")
