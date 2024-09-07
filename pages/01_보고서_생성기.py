@@ -9,7 +9,7 @@ st.set_page_config(
 import insert_logo 
 from with_report import condition_select, overview_writer, preprocessing_init_data, choose_trans_metric, export_info, bullet_output, ch_ranking_writer, detail_writer, keyword_writer, history_writer
 
-insert_logo.add_logo("C:\\Users\\markd\\AI\WithBrother-AI\\withbrother_logo.png")
+insert_logo.add_logo("withbrother_logo.png")
 
 #보고서 유형 저장
 if 'condition_set' not in st.session_state:
