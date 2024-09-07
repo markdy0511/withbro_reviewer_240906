@@ -32,6 +32,8 @@ def ch_ranking_df(media_df, ga_df, col_name, metric_set, trans_metric_set, group
     df_combined_re = df_combined[columns]
 
     rounded_ch_ranking_df = round_col_axis(df_combined_re, 'CTR')
+    rounded_ch_ranking_df[col_name] = rounded_ch_ranking_df[col_name].fillna('정보없음')
+
 
     return rounded_ch_ranking_df
 
@@ -72,7 +74,7 @@ def ch_df(ch_ranking_df, col_name, col_value, group_period, period_set, conditio
     ch_df.drop(columns=[col_name], inplace=True)
 
     overview_ch_df = comparing_df(ch_df, period_set)
-
+    #st.write(overview_ch_df)
     if len(overview_ch_df) == 1:
         rounded_overview_ch_df = round_col_axis(overview_ch_df, 'CTR') #1 줄
     else:
