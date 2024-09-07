@@ -202,7 +202,7 @@ if st.session_state.trans_metric_set:
                 with st.spinner('데이터 분석 중...'):
                     for channel in channels:
                         if str(channel) == '정보없음':
-                            pass
+                            continue
                         rounded_overview_ch_df = ch_ranking_writer.ch_df(
                             ch_ranking_df, '매체', channel, 
                             grouping_period,
@@ -226,6 +226,8 @@ if st.session_state.trans_metric_set:
                 st.subheader('매체별 변화량 비교')
 
                 for channel in sort_order:
+                    if str(channel) == '정보없음':
+                        continue
                     st.subheader(channel)
                     st.write(ch_overview_df_dic[channel])
                     bullet_output.print_bullet(ch_overview_st_dic[channel])
@@ -246,6 +248,8 @@ if st.session_state.trans_metric_set:
                 st.subheader('매체별 변화량 비교')
 
                 for channel in st.session_state.ch_ranking_result["sort_order"]:
+                    if str(channel) == '정보없음':
+                        continue
                     st.subheader(channel)
                     st.write(st.session_state.ch_ranking_result["ch_overview_df_dic"][channel])
                     bullet_output.print_bullet(st.session_state.ch_ranking_result["ch_overview_st_dic"][channel])
@@ -304,7 +308,7 @@ if st.session_state.trans_metric_set:
                     with st.spinner('데이터 분석 중...'):
                         for brnch in brnchs:
                             if str(brnch) == '정보없음':
-                                pass
+                                continue
                             rounded_overview_brnch_df = ch_ranking_writer.ch_df(
                                 brnch_ranking_df, '소재구분', brnch, 
                                 grouping_period,
@@ -328,6 +332,8 @@ if st.session_state.trans_metric_set:
                     st.subheader('소재구분별 변화량 비교')
 
                     for brnch in sort_order:
+                        if str(brnch) == '정보없음':
+                            continue
                         st.subheader(brnch)
                         st.write(brnch_overview_df_dic[brnch])
                         bullet_output.print_bullet(brnch_overview_st_dic[brnch])
@@ -348,6 +354,8 @@ if st.session_state.trans_metric_set:
                     st.subheader('소재구분별 변화량 비교')
 
                     for brnch in st.session_state.brnch_ranking_result["sort_order"]:
+                        if str(brnch) == '정보없음':
+                            continue
                         st.subheader(brnch)
                         st.write(st.session_state.brnch_ranking_result["brnch_overview_df_dic"][brnch])
                         bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_overview_st_dic"][brnch])
@@ -701,7 +709,7 @@ if st.session_state.trans_metric_set:
                 with st.spinner('데이터 분석 중...'):
                     for channel in channels:
                         if str(channel) == '정보없음':
-                            pass
+                            continue
                         rounded_overview_ch_df = ch_ranking_writer.ch_df(
                             ch_ranking_df, '매체', channel, 
                             grouping_period,
@@ -725,6 +733,8 @@ if st.session_state.trans_metric_set:
                 st.subheader('매체별 변화량 비교')
 
                 for channel in sort_order:
+                    if str(channel) == '정보없음':
+                        continue
                     st.subheader(channel)
                     st.write(ch_overview_df_dic[channel])
                     bullet_output.print_bullet(ch_overview_st_dic[channel])
@@ -745,6 +755,8 @@ if st.session_state.trans_metric_set:
                 st.subheader('매체별 변화량 비교')
 
                 for channel in st.session_state.ch_ranking_result["sort_order"]:
+                    if str(channel) == '정보없음':
+                        continue
                     st.subheader(channel)
                     st.write(st.session_state.ch_ranking_result["ch_overview_df_dic"][channel])
                     bullet_output.print_bullet(st.session_state.ch_ranking_result["ch_overview_st_dic"][channel])
@@ -803,7 +815,7 @@ if st.session_state.trans_metric_set:
                     with st.spinner('데이터 분석 중...'):
                         for brnch in brnchs:
                             if str(brnch) == '정보없음':
-                                pass
+                                continue
                             rounded_overview_brnch_df = ch_ranking_writer.ch_df(
                                 brnch_ranking_df, '소재구분', brnch, 
                                 grouping_period,
@@ -827,6 +839,8 @@ if st.session_state.trans_metric_set:
                     st.subheader('소재구분별 변화량 비교')
 
                     for brnch in sort_order:
+                        if str(brnch) == '정보없음':
+                            continue
                         st.subheader(brnch)
                         st.write(brnch_overview_df_dic[brnch])
                         bullet_output.print_bullet(brnch_overview_st_dic[brnch])
@@ -846,6 +860,8 @@ if st.session_state.trans_metric_set:
                     st.subheader('소재구분별 변화량 비교')
 
                     for brnch in st.session_state.brnch_ranking_result["sort_order"]:
+                        if str(brnch) == '정보없음':
+                            continue
                         st.subheader(brnch)
                         st.write(st.session_state.brnch_ranking_result["brnch_overview_df_dic"][brnch])
                         bullet_output.print_bullet(st.session_state.brnch_ranking_result["brnch_overview_st_dic"][brnch])
